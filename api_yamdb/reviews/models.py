@@ -58,6 +58,27 @@ class Title(models.Model):
     class Meta:
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'year'],
+                name='unique_name_year',
+            ),
+        ]
 
     def __str__(self):
         return self.name
+    
+class GenreTitle(models.Model):
+    genre = models.ForeignKey(
+        Genre,
+        null=True,
+        on_delete=models.SET_NULL
+    )
+    title = models.ForeignKey(
+        Title,
+        null=True,
+        on_delete=models.SET_NULL
+    )
+
+    def __str__(self):
+        return f'{self.title} {self.genre}'

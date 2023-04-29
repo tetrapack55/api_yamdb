@@ -1,45 +1,36 @@
-from django.db.models import Avg
-from django.utils import timezone
-from rest_framework import serializers
+import re
 
-from reviews.models import Category, Comment, Genre, Review, Title, User
+from rest_framework import serializers 
+
+from reviews.models import Category, Genre, Title
+from .validators import validate_year
 
 
 class CategorySerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Category
-        fields = ('name', 'slug')
+        fields = ("name", "slug")
+
+    def validate_slug(self, value):
+        if re.match(pattern=r"^[-a-zA-Z0-9_]+$", string=value):
+            return value
+        raise serializers.ValidationError(
+            "Slug содержит запрещенные символы"
+        )
 
 
 class GenreSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Genre
-        fields = ('name', 'slug')
+        fields = ("name", "slug")
 
-
-class TitleCreateSerializer(serializers.ModelSerializer):
-    category = serializers.SlugRelatedField(
-        slug_field='slug', queryset=Category.objects.all(),
-    )
-    genre = serializers.SlugRelatedField(
-        slug_field='slug', queryset=Genre.objects.all(), many=True
-    )
-
-    class Meta:
-        model = Title
-        fields = (
-            'id', 'name', 'year', 'description', 'genre', 'category'
+    def validate_slug(self, value):
+        if re.match(pattern=r"^[-a-zA-Z0-9_]+$", string=value):
+            return value
+        raise serializers.ValidationError(
+            "В поле Slug содержится запрещенные символы"
         )
 
-    def validate_year(self, value):
-        current_year = timezone.now().year
-        if not 0 <= value <= current_year:
-            raise serializers.ValidationError(
-                'Проверьте год создания произведения (должен быть нашей эры).'
-            )
-        return value
 
 class SlugDictRelatedField(serializers.SlugRelatedField):
     """Сериализатор для корректного вывода данных при запросах."""
@@ -47,8 +38,8 @@ class SlugDictRelatedField(serializers.SlugRelatedField):
     def to_representation(self, obj):
         result = {"name": obj.name, "slug": obj.slug}
         return result
-    
-    
+
+
 class TitleSerializer(serializers.ModelSerializer):
     """Сериализатор произведений."""
 
@@ -71,3 +62,10 @@ class TitleSerializer(serializers.ModelSerializer):
             "genre",
             "category",
         )
+    
+    def get_rating(self, obj):
+        rating = self.context["rating"]
+        if obj in rating:
+            return rating.get(pk=obj.pk).rating
+
+ 

@@ -35,8 +35,6 @@ class GenreViewSet(GetPostDeleteViewSet):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    queryset = Title.objects.all().annotate(
-        Avg('reviews__score')).order_by('name')
-
+    queryset = Title.objects.all()
     serializer_class = TitleSerializer
     filterset_class = TitleFilter

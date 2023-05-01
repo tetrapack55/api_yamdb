@@ -1,7 +1,9 @@
 from django.db import models
 
+from api.validators import validate_year
 
-class Categories(models.Model):
+
+class Category(models.Model):
     name = models.CharField(
         verbose_name='Название категории',
         max_length=256,
@@ -38,10 +40,10 @@ class Genre(models.Model):
 
 class Title(models.Model):
     name = models.CharField('Название', max_length=256)
-    year = models.IntegerField('Год выпуска')
+    year = models.IntegerField("Год", validators=[validate_year])
     description = models.TextField('Описание', blank=True, null=True)
     category = models.ForeignKey(
-        Categories,
+        Category,
         verbose_name='Slug категории',
         related_name='titles',
         on_delete=models.SET_NULL,
@@ -51,12 +53,34 @@ class Title(models.Model):
         Genre,
         verbose_name='Slug жанра',
         related_name='titles',
-        null=True
+        blank=True
     )
 
     class Meta:
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'year'],
+                name='unique_name_year',
+            ),
+        ]
 
     def __str__(self):
         return self.name
+
+
+class GenreTitle(models.Model):
+    genre = models.ForeignKey(
+        Genre,
+        null=True,
+        on_delete=models.SET_NULL
+    )
+    title = models.ForeignKey(
+        Title,
+        null=True,
+        on_delete=models.SET_NULL
+    )
+
+    def __str__(self):
+        return f'{self.title} {self.genre}'

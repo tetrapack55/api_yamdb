@@ -16,3 +16,36 @@ YaMDB отправляет письмо с кодом подтверждения
 - djangorestframework 3.12.4  
 
 ## Установка
+- Установить зависимости из файла requirements.txt
+
+```
+python -m pip install --upgrade pip
+```
+
+```
+pip install -r requirements.txt
+```
+### Примеры API запросов:
+
+Документация доступна по эндпоинту: /redoc/
+
+Для неавторизованных пользователей работа с API доступна в режиме чтения,
+что-либо изменить или создать не получится.
+
+- Выполнить миграции:
+
+```
+python manage.py migrate
+```
+
+- Создать суперпользователя:
+
+```
+python manage.py createsuperuser
+```
+
+- Запустить проект:
+
+```
+python manage.py runserver
+```

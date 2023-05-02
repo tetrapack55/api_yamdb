@@ -158,7 +158,10 @@ PATCH /api/v1/titles/{titles_id}
 Полный список запросов API находятся в документации.
 
 ## Авторы проекта
-
+```
 Наталья https://github.com/Natali7077
+
 Олег https://github.com/tetrapack55
+
 Сергей https://github.com/ir0nc0re
+```

@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 
 
@@ -11,20 +12,23 @@ class User(AbstractUser):
         (MODERATOR, 'moderator'),
         (ADMIN, 'admin'),
     ]
+    username_validator = UnicodeUsernameValidator()
+
     username = models.CharField(
         'Никнейм',
-        max_length=30,
+        max_length=150,
         blank=False,
-        unique=True
+        unique=True,
+        validators=(username_validator,),
     )
     first_name = models.CharField(
         'Имя',
-        max_length=30,
+        max_length=150,
         blank=True
     )
     last_name = models.CharField(
         'Фамилия',
-        max_length=50,
+        max_length=150,
         blank=True)
     email = models.EmailField(
         'Электронная почта',
@@ -42,14 +46,6 @@ class User(AbstractUser):
         default=USER
     )
     REQUIRED_FIELDS = ['email', ]
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['username', 'email'],
-                name='unique_username_email',
-            )
-        ]
 
     def __str__(self):
         return self.username

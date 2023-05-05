@@ -4,7 +4,6 @@ from rest_framework import serializers
 
 from django.shortcuts import get_object_or_404
 from reviews.models import Category, Genre, Title, Review, Comment
-from .validators import validate_year
 
 
 class CategorySerializer(serializers.ModelSerializer):

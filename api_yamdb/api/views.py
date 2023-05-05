@@ -5,10 +5,10 @@ from rest_framework import filters, mixins, viewsets
 from reviews.models import Category, Genre, Title, Review
 
 from .filters import TitleFilter
-from rest_framework.permissions import (IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly)
+from rest_framework.permissions import (IsAuthenticatedOrReadOnly)
 
-from users.permissions import (IsAdminOrModerOrAuthorOrReadOnly
+from users.permissions import (IsAdminOrModerOrAuthorOrReadOnly,
+                               IsAdminOrReadOnly
                                )
 
 from .serializers import (CategorySerializer,
@@ -29,6 +29,7 @@ class GetPostDeleteViewSet(mixins.CreateModelMixin,
 class CategoryViewSet(GetPostDeleteViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     search_fields = ('name',)
     lookup_field = 'slug'
@@ -37,15 +38,20 @@ class CategoryViewSet(GetPostDeleteViewSet):
 class GenreViewSet(GetPostDeleteViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+    permission_classes = (IsAdminOrReadOnly,)
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     search_fields = ('name',)
     lookup_field = 'slug'
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    queryset = Title.objects.all()
     serializer_class = TitleSerializer
+    queryset = Title.objects.annotate(
+        rating=Avg('reviews__score')
+    ).all()
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_class = TitleFilter
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class CommentViewSet(viewsets.ModelViewSet):

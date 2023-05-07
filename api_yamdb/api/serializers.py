@@ -1,5 +1,4 @@
-import re
-
+from django.conf import settings
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
@@ -14,25 +13,11 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ("name", "slug")
 
-    def validate_slug(self, value):
-        if re.match(pattern=r"^[-a-zA-Z0-9_]+$", string=value):
-            return value
-        raise serializers.ValidationError(
-            "Slug содержит запрещенные символы"
-        )
-
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
         fields = ("name", "slug")
-
-    def validate_slug(self, value):
-        if re.match(pattern=r"^[-a-zA-Z0-9_]+$", string=value):
-            return value
-        raise serializers.ValidationError(
-            "В поле Slug содержится запрещенные символы"
-        )
 
 
 class SlugDictRelatedField(serializers.SlugRelatedField):
@@ -132,9 +117,12 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class SignUpSerializer(serializers.Serializer):
-    email = serializers.EmailField(max_length=254, required=True)
+    email = serializers.EmailField(
+        max_length=settings.DEFAULT_EMAIL_LENGHT,
+        required=True
+    )
     username = serializers.CharField(
-        max_length=150,
+        max_length=settings.DEFAULT_USER_CHARFIELD,
         required=True,
         validators=[UnicodeUsernameValidator()]
     )

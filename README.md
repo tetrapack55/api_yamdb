@@ -12,10 +12,14 @@ YaMDB отправляет письмо с кодом подтверждения
 Пользователей может создавать администратор — через админ-зону сайта или через POST-запрос на специальный эндпоинт `api/v1/users/` (описание полей запроса для этого случая есть в документации). При создании пользователя не предполагается автоматическая отправка письма пользователю с кодом подтверждения. После этого пользователь должен самостоятельно отправить свой email и username на эндпоинт `/api/v1/auth/signup/` , в ответ ему должно прийти письмо с кодом подтверждения. Далее пользователь отправляет POST-запрос с параметрами username и confirmation_code на эндпоинт `/api/v1/auth/token/`, в ответе на запрос ему приходит token (JWT-токен), как и при самостоятельной регистрации.
 ___
 ## Технологии, использованные при разработке
-- язык *Python*
-- фреймворк *Django*
-- библиотеки *Django REST Framework*, *Simple JWT*
-- база данных *SQLite*
+[![Python](https://img.shields.io/badge/Python-3776AB?style=plastic&logo=python&logoColor=092E20&labelColor=white
+)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/django-092E20?style=plastic&logo=django&logoColor=092E20&labelColor=white
+)](https://www.djangoproject.com/)
+[![Django REST Framework](https://img.shields.io/badge/-Django_REST_framework-DC143C?style=plastic
+)](https://www.django-rest-framework.org/)
+[![SQLite](https://img.shields.io/badge/SQLite-003B57?style=plastic&logo=sqlite&logoColor=003B57&labelColor=white
+)](https://www3.sqlite.org/index.html)
 ___
 
 ### Документация
@@ -26,22 +30,16 @@ ___
 Клонировать репозиторий и перейти в него в командной строке:
 ```
 git clone https://github.com/tetrapack55/api_yamdb
-```
-```
 cd api_yamdb
 ```
 Cоздать и активировать виртуальное окружение:
 ```
 python -m venv venv
-```
-```
 source venv/Scripts/activate
 ```
 Установить зависимости из файла requirements.txt:
 ```
 python -m pip install --upgrade pip
-```
-```
 pip install -r requirements.txt
 ```
 Выполнить миграции:
@@ -49,7 +47,6 @@ pip install -r requirements.txt
 python manage.py migrate
 ```
 Создать суперпользователя:
-
 ```
 python manage.py createsuperuser
 ```
